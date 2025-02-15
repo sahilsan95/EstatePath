@@ -6,48 +6,62 @@ import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import ListingItem from "../components/ListingItem";
 
+// Home component that displays listings and offers
 const Home = () => {
+  // State variables to hold different types of listings
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+
+  // Enable navigation for Swiper
   SwiperCore.use([Navigation]);
+
+  // Log offer listings to console for debugging
   console.log(offerListings);
+
+  // Fetch listings when the component mounts
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
+        // Fetch offer listings
         const res = await fetch("/api/listing/get?offer=true&limit=4");
         const data = await res.json();
-        setOfferListings(data);
-        fetchRentListings();
+        setOfferListings(data); // Update state with fetched data
+        fetchRentListings(); // Fetch rent listings after offers
       } catch (error) {
-        console.log(error);
+        console.log(error); // Log any errors
       }
     };
+
     const fetchRentListings = async () => {
       try {
+        // Fetch rent listings
         const res = await fetch("/api/listing/get?type=rent&limit=4");
         const data = await res.json();
-        setRentListings(data);
-        fetchSaleListings();
+        setRentListings(data); // Update state with fetched data
+        fetchSaleListings(); // Fetch sale listings after rents
       } catch (error) {
-        console.log(error);
+        console.log(error); // Log any errors
       }
     };
+
     const fetchSaleListings = async () => {
       try {
+        // Fetch sale listings
         const res = await fetch("/api/listing/get?type=sale&limit=4");
         const data = await res.json();
-        setSaleListings(data);
+        setSaleListings(data); // Update state with fetched data
       } catch (error) {
-        console.log(error);
+        console.log(error); // Log any errors
       }
     };
-    fetchOfferListings();
+
+    fetchOfferListings(); // Initiate the first fetch
   }, []);
 
   return (
     <div>
-      {/* top */}
+      {/* Top section with title and description */}
       <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
         <h1 className="text-slate-700 font-bold text-3xl lg:text-6xl">
           Find your next <span className="text-slate-500">perfect</span>
@@ -66,27 +80,28 @@ const Home = () => {
           Let's get started...
         </Link>
       </div>
-      {/* swiper */}
+
+      {/* Swiper for showcasing offer listings */}
       <Swiper navigation>
         {offerListings &&
           offerListings.length > 0 &&
           offerListings.map((listing) => (
-            <SwiperSlide>
+            <SwiperSlide key={listing._id}> {/* Unique key for each slide */}
               <div
                 className="h-[550px]"
-                key={listing._id}
                 style={{
-                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
-                  backgroundSize: "cover",
+                  background: `url(${listing.imageUrls[0]}) center no-repeat`, // Set background image
+                  backgroundSize: "cover", // Cover the entire area
                 }}
               ></div>
             </SwiperSlide>
           ))}
       </Swiper>
-      {/* listing results for offer , sale and rent */}
+
+      {/* Display sections for offer, sale, and rent listings */}
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {offerListings && offerListings.length > 0 && (
-          <div className="">
+          <div>
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
                 Recent offers
@@ -100,15 +115,16 @@ const Home = () => {
             </div>
             <div className="flex flex-wrap gap-4">
               {offerListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
+                <ListingItem listing={listing} key={listing._id} /> /* Render ListingItem for offers */
               ))}
             </div>
           </div>
         )}
       </div>
+
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {rentListings && rentListings.length > 0 && (
-          <div className="">
+          <div>
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
                 Recent places for rent
@@ -122,15 +138,16 @@ const Home = () => {
             </div>
             <div className="flex flex-wrap gap-4">
               {rentListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
+                <ListingItem listing={listing} key={listing._id} /> /* Render ListingItem for rents */
               ))}
             </div>
           </div>
         )}
       </div>
+
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {saleListings && saleListings.length > 0 && (
-          <div className="">
+          <div>
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-slate-600">
                 Recent places for sale
@@ -144,7 +161,7 @@ const Home = () => {
             </div>
             <div className="flex flex-wrap gap-4">
               {saleListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
+                <ListingItem listing={listing} key={listing._id} /> /* Render ListingItem for sales */
               ))}
             </div>
           </div>
@@ -155,3 +172,4 @@ const Home = () => {
 };
 
 export default Home;
+

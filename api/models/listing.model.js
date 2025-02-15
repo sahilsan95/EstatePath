@@ -55,9 +55,10 @@ const listingSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true } //adds createdate and updatedate
 );
 
+//This model is a constructor function that you can use to create and manage documents in your MongoDB collection.
 const Listing = mongoose.model("Listing", listingSchema);
 
 export default Listing;
